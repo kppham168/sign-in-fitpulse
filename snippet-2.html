@@ -1,0 +1,68 @@
+<!-- Sign-in page: users enter email and password to log in -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in — FitPulse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-center">
+    <div class="card">
+      <h1 style="font-size:28px;margin-bottom:4px;">Welcome back</h1>
+      <p class="text-sm text-muted mb-6">Sign in to continue your fitness journey</p>
+
+      <form id="signin-form">
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="you@example.com" required>
+          <span class="error-msg" id="email-error">Please enter a valid email</span>
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Your password" required>
+          <span class="error-msg" id="password-error">Password is required</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full mt-2">Sign in</button>
+      </form>
+
+      <p class="text-sm text-center mt-4">
+        Don't have an account? <a href="signup.html">Sign up</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    /* This script handles signing in: checks fields, saves user to localStorage, and redirects */
+    document.getElementById('signin-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = document.getElementById('email').value.trim();
+      var password = document.getElementById('password').value;
+      var valid = true;
+
+      if (!email || !email.includes('@')) {
+        document.getElementById('email-error').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('email-error').style.display = 'none';
+      }
+
+      if (!password) {
+        document.getElementById('password-error').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('password-error').style.display = 'none';
+      }
+
+      if (!valid) return;
+
+      // Save a simple session flag
+      localStorage.setItem('fitpulse_user', JSON.stringify({ email: email }));
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+</body>
+</html>
