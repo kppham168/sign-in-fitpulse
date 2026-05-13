@@ -1,0 +1,107 @@
+<!-- Profile page: shows the user's info and lets them update weight, height, and goal -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile — FitPulse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation bar -->
+  <nav class="nav">
+    <a href="dashboard.html" class="nav-logo">FitPulse</a>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="log-workout.html">Log workout</a>
+      <a href="profile.html" class="active">Profile</a>
+      <a href="signin.html">Sign out</a>
+    </div>
+  </nav>
+
+  <div class="page-center" style="min-height:auto;padding:48px 24px;">
+    <div class="card card-wide">
+      <h1 style="font-size:28px;margin-bottom:4px;">Your profile</h1>
+      <p class="text-sm text-muted mb-6">View and update your stats</p>
+
+      <form id="profile-form">
+        <div class="input-group">
+          <label for="profile-name">Full name</label>
+          <input type="text" id="profile-name" required>
+        </div>
+
+        <div class="input-group">
+          <label for="profile-email">Email</label>
+          <input type="email" id="profile-email" disabled style="background:#f0ebe2;cursor:not-allowed;">
+        </div>
+
+        <div class="grid-2">
+          <div class="input-group">
+            <label for="profile-weight">Current weight (lbs)</label>
+            <input type="number" id="profile-weight" min="50" max="600" required>
+          </div>
+          <div class="input-group">
+            <label for="profile-height">Height (inches)</label>
+            <input type="number" id="profile-height" min="36" max="96" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="profile-goal-weight">Goal weight (lbs)</label>
+          <input type="number" id="profile-goal-weight" min="50" max="600" required>
+        </div>
+
+        <div class="input-group">
+          <label for="profile-goal-type">Goal type</label>
+          <select id="profile-goal-type">
+            <option value="lose">Lose weight</option>
+            <option value="maintain">Maintain weight</option>
+            <option value="gain">Gain weight / build muscle</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-secondary btn-full mt-2">Save changes</button>
+      </form>
+
+      <div id="profile-toast" class="toast">Profile updated!</div>
+    </div>
+  </div>
+
+  <script>
+    /* This script loads the user's data into the profile form and saves changes */
+    (function() {
+      var user = JSON.parse(localStorage.getItem('fitpulse_user') || '{}');
+
+      if (!user.email) {
+        window.location.href = 'signin.html';
+        return;
+      }
+
+      // Fill form with existing data
+      document.getElementById('profile-name').value = user.name || '';
+      document.getElementById('profile-email').value = user.email || '';
+      document.getElementById('profile-weight').value = user.weight || '';
+      document.getElementById('profile-height').value = user.height || '';
+      document.getElementById('profile-goal-weight').value = user.goalWeight || '';
+      document.getElementById('profile-goal-type').value = user.goalType || 'lose';
+
+      // Save on submit
+      document.getElementById('profile-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        user.name = document.getElementById('profile-name').value.trim();
+        user.weight = Number(document.getElementById('profile-weight').value);
+        user.height = Number(document.getElementById('profile-height').value);
+        user.goalWeight = Number(document.getElementById('profile-goal-weight').value);
+        user.goalType = document.getElementById('profile-goal-type').value;
+
+        localStorage.setItem('fitpulse_user', JSON.stringify(user));
+
+        var toast = document.getElementById('profile-toast');
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+      });
+    })();
+  </script>
+</body>
+</html>
