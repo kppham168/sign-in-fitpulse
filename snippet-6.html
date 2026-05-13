@@ -1,0 +1,109 @@
+<!-- Log workout page: form to record a new workout with date, type, reps, weight, and time -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log workout — FitPulse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation bar -->
+  <nav class="nav">
+    <a href="dashboard.html" class="nav-logo">FitPulse</a>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="log-workout.html" class="active">Log workout</a>
+      <a href="profile.html">Profile</a>
+      <a href="signin.html">Sign out</a>
+    </div>
+  </nav>
+
+  <div class="page-center" style="min-height:auto;padding:48px 24px;">
+    <div class="card card-wide">
+      <h1 style="font-size:28px;margin-bottom:4px;">Log a workout</h1>
+      <p class="text-sm text-muted mb-6">Record what you did today</p>
+
+      <form id="workout-form">
+        <div class="input-group">
+          <label for="workout-date">Date</label>
+          <input type="date" id="workout-date" required>
+        </div>
+
+        <div class="input-group">
+          <label for="workout-type">Workout type</label>
+          <select id="workout-type">
+            <option value="Upper body">Upper body</option>
+            <option value="Lower body">Lower body</option>
+            <option value="Full body">Full body</option>
+            <option value="Cardio">Cardio</option>
+            <option value="Core / Abs">Core / Abs</option>
+            <option value="Yoga / Stretching">Yoga / Stretching</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="grid-2">
+          <div class="input-group">
+            <label for="reps">Repetitions</label>
+            <input type="number" id="reps" placeholder="12" min="0">
+          </div>
+          <div class="input-group">
+            <label for="workout-weight">Weight (lbs)</label>
+            <input type="number" id="workout-weight" placeholder="135" min="0" step="0.5">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="workout-time">Time (minutes)</label>
+          <input type="number" id="workout-time" placeholder="45" min="0">
+        </div>
+
+        <div class="input-group">
+          <label for="notes">Notes (optional)</label>
+          <textarea id="notes" rows="2" placeholder="How did it feel?"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full mt-2">Save workout</button>
+      </form>
+
+      <div id="success-toast" class="toast">Workout saved!</div>
+    </div>
+  </div>
+
+  <script>
+    /* This script saves the workout to localStorage and shows a success message */
+    document.getElementById('workout-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      var workout = {
+        date: document.getElementById('workout-date').value,
+        type: document.getElementById('workout-type').value,
+        reps: document.getElementById('reps').value || null,
+        weight: document.getElementById('workout-weight').value || null,
+        time: document.getElementById('workout-time').value || null,
+        notes: document.getElementById('notes').value || '',
+        loggedAt: new Date().toISOString()
+      };
+
+      // Get existing workouts, add new one, save back
+      var workouts = JSON.parse(localStorage.getItem('fitpulse_workouts') || '[]');
+      workouts.push(workout);
+      localStorage.setItem('fitpulse_workouts', JSON.stringify(workouts));
+
+      // Show toast
+      var toast = document.getElementById('success-toast');
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 2500);
+
+      // Clear form
+      this.reset();
+      // Set date back to today
+      document.getElementById('workout-date').value = new Date().toISOString().split('T')[0];
+    });
+
+    // Set default date to today
+    document.getElementById('workout-date').value = new Date().toISOString().split('T')[0];
+  </script>
+</body>
+</html>
