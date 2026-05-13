@@ -1,0 +1,71 @@
+<!-- Onboarding page: asks new users for their starting stats (weight, height, goal weight) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Let's get started — FitPulse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-center">
+    <div class="card card-wide">
+      <h1 style="font-size:28px;margin-bottom:4px;">Tell us about yourself</h1>
+      <p class="text-sm text-muted mb-6">This helps us track your progress from day one.</p>
+
+      <form id="onboarding-form">
+        <div class="grid-2">
+          <div class="input-group">
+            <label for="weight">Current weight (lbs)</label>
+            <input type="number" id="weight" placeholder="165" min="50" max="600" required>
+          </div>
+          <div class="input-group">
+            <label for="height">Height (inches)</label>
+            <input type="number" id="height" placeholder="68" min="36" max="96" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="goal-weight">Goal weight (lbs)</label>
+          <input type="number" id="goal-weight" placeholder="150" min="50" max="600" required>
+        </div>
+
+        <div class="input-group">
+          <label for="goal-type">Goal type</label>
+          <select id="goal-type">
+            <option value="lose">Lose weight</option>
+            <option value="maintain">Maintain weight</option>
+            <option value="gain">Gain weight / build muscle</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full mt-2">Save & go to dashboard</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    /* This script saves the user's starting stats to localStorage and redirects to the dashboard */
+    document.getElementById('onboarding-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var weight = document.getElementById('weight').value;
+      var height = document.getElementById('height').value;
+      var goalWeight = document.getElementById('goal-weight').value;
+      var goalType = document.getElementById('goal-type').value;
+
+      // Save profile data alongside the existing user object
+      var user = JSON.parse(localStorage.getItem('fitpulse_user') || '{}');
+      user.weight = Number(weight);
+      user.height = Number(height);
+      user.goalWeight = Number(goalWeight);
+      user.goalType = goalType;
+      localStorage.setItem('fitpulse_user', JSON.stringify(user));
+
+      // Initialize an empty workouts array
+      localStorage.setItem('fitpulse_workouts', JSON.stringify([]));
+
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+</body>
+</html>
