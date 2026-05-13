@@ -1,0 +1,123 @@
+<!-- Dashboard page: shows the user's progress stats and recent workouts -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — FitPulse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation bar -->
+  <nav class="nav">
+    <a href="dashboard.html" class="nav-logo">FitPulse</a>
+    <div class="nav-links">
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="log-workout.html">Log workout</a>
+      <a href="profile.html">Profile</a>
+      <a href="signin.html" id="signout-link">Sign out</a>
+    </div>
+  </nav>
+
+  <main style="max-width:960px;margin:0 auto;padding:32px 24px;">
+    <!-- Welcome header -->
+    <div class="flex justify-between items-center" style="margin-bottom:24px;">
+      <div>
+        <h1 style="font-size:32px;" id="welcome-heading">Welcome back</h1>
+        <p class="text-sm text-muted">Here's your progress summary</p>
+      </div>
+      <a href="log-workout.html" class="btn btn-primary">+ Log workout</a>
+    </div>
+
+    <!-- Stats row -->
+    <div class="grid-3" style="margin-bottom:24px;">
+      <div class="stat-card">
+        <h3>Current weight</h3>
+        <div class="number" id="display-weight">—</div>
+      </div>
+      <div class="stat-card">
+        <h3>Goal weight</h3>
+        <div class="number" id="display-goal">—</div>
+      </div>
+      <div class="stat-card">
+        <h3>Workouts logged</h3>
+        <div class="number" id="display-count">0</div>
+      </div>
+    </div>
+
+    <!-- Progress chart placeholder (upgrade to Chart.js later) -->
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:20px;margin-bottom:12px;">Weight progress</h2>
+      <div class="chart-area">
+        <span>📈 Your weight trend will appear here</span>
+      </div>
+    </div>
+
+    <!-- Recent workouts table -->
+    <div>
+      <h2 style="font-size:20px;margin-bottom:12px;">Recent workouts</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Workout</th>
+              <th>Reps</th>
+              <th>Weight</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="workout-table-body">
+            <tr><td colspan="5" class="text-sm text-muted text-center" style="padding:24px;">No workouts logged yet — start your first one!</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    /* This script loads user data and workouts from localStorage and fills the dashboard */
+    (function() {
+      var user = JSON.parse(localStorage.getItem('fitpulse_user') || '{}');
+      var workouts = JSON.parse(localStorage.getItem('fitpulse_workouts') || '[]');
+
+      // If no user is signed in, redirect to sign-in
+      if (!user.email) {
+        window.location.href = 'signin.html';
+        return;
+      }
+
+      // Fill welcome heading
+      document.getElementById('welcome-heading').textContent = 'Welcome back' + (user.name ? ', ' + user.name : '');
+
+      // Fill stats
+      document.getElementById('display-weight').textContent = user.weight ? user.weight + ' lbs' : '—';
+      document.getElementById('display-goal').textContent = user.goalWeight ? user.goalWeight + ' lbs' : '—';
+      document.getElementById('display-count').textContent = workouts.length;
+
+      // Fill workout table
+      var tbody = document.getElementById('workout-table-body');
+      if (workouts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-sm text-muted text-center" style="padding:24px;">No workouts logged yet — start your first one!</td></tr>';
+      } else {
+        // Show most recent 5 workouts
+        var recent = workouts.slice(-5).reverse();
+        tbody.innerHTML = recent.map(function(w) {
+          return '<tr>' +
+            '<td>' + w.date + '</td>' +
+            '<td>' + w.type + '</td>' +
+            '<td>' + (w.reps || '—') + '</td>' +
+            '<td>' + (w.weight ? w.weight + ' lbs' : '—') + '</td>' +
+            '<td>' + (w.time || '—') + '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      // Sign out handler
+      document.getElementById('signout-link').addEventListener('click', function() {
+        localStorage.removeItem('fitpulse_user');
+      });
+    })();
+  </script>
+</body>
+</html>
