@@ -1,0 +1,83 @@
+<!-- Sign-up page: new users create an account -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign up — FitPulse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-center">
+    <div class="card">
+      <h1 style="font-size:28px;margin-bottom:4px;">Start your journey</h1>
+      <p class="text-sm text-muted mb-6">Create an account to track your fitness</p>
+
+      <form id="signup-form">
+        <div class="input-group">
+          <label for="name">Full name</label>
+          <input type="text" id="name" placeholder="Alex Rivera" required>
+          <span class="error-msg" id="name-error">Name is required</span>
+        </div>
+
+        <div class="input-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" placeholder="you@example.com" required>
+          <span class="error-msg" id="signup-email-error">Please enter a valid email</span>
+        </div>
+
+        <div class="input-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="At least 6 characters" minlength="6" required>
+          <span class="error-msg" id="signup-password-error">Password must be at least 6 characters</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full mt-2">Create account</button>
+      </form>
+
+      <p class="text-sm text-center mt-4">
+        Already have an account? <a href="signin.html">Sign in</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    /* This script handles signing up: saves user info and sends them to onboarding */
+    document.getElementById('signup-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var name = document.getElementById('name').value.trim();
+      var email = document.getElementById('signup-email').value.trim();
+      var password = document.getElementById('signup-password').value;
+      var valid = true;
+
+      if (!name) {
+        document.getElementById('name-error').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('name-error').style.display = 'none';
+      }
+
+      if (!email || !email.includes('@')) {
+        document.getElementById('signup-email-error').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('signup-email-error').style.display = 'none';
+      }
+
+      if (!password || password.length < 6) {
+        document.getElementById('signup-password-error').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('signup-password-error').style.display = 'none';
+      }
+
+      if (!valid) return;
+
+      // Save user data (password stored locally for demo only)
+      localStorage.setItem('fitpulse_user', JSON.stringify({ name: name, email: email, password: password }));
+      // Send to onboarding to collect weight/height/goal
+      window.location.href = 'onboarding.html';
+    });
+  </script>
+</body>
+</html>
